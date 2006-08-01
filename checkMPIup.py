@@ -6,7 +6,7 @@ import sys
 start_stop = sys.argv[1]
 
 if start_stop == 'start':
-    tmp = os.popen('/http/mpi.defs/checkMPIdaemon.py &')
+    tmp = os.system('/http/mpi.defs/checkMPIdaemon.py ')
     print 'OK'
 elif start_stop == 'stop':
     tmp = os.popen('killall checkMPIdaemon.py')
