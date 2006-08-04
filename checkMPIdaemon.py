@@ -139,7 +139,7 @@ def Up_is_Down(machinesAll, machinesDown, lamDefs):
     return machinesDown
 
 def Down_is_Up(machinesDown, lamDefs):
-    for machine in machinesDown:
+    for machine in machinesDown[:]:
         dead = os.system('ping -q -c1 ' + machine)
 	writeable = False
 	if not dead:
