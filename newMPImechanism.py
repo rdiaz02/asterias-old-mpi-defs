@@ -22,9 +22,9 @@ machinesDown =[]
 ## up to being down, or viceversa.
 
 def lamcheck(machine):
-    'Do a lamnodes, check we get the right count of nodes. O.w., lamboot'.
+    'Do a lamnodes, check we get the right count of nodes. O.w., lamboot'
     lf1 = int(os.popen('wc /http/mpi.defs/lamb-host.' + machine + '.def').readline().split()[0])
-    lf2 = int(os.popen('grep "#" /http/mpi.defs/lamb-host.' + machine + '.def | wd').readline().split()[0])
+    lf2 = int(os.popen('grep "#" /http/mpi.defs/lamb-host.' + machine + '.def | wc').readline().split()[0])
     L_NODES = lf1 - lf2
     if (int(os.popen('lamnodes | wc').readline().split()[0]) < L_NODES):
         os.system('lamboot -H /http/mpi.defs/lamb-host.' + machine + '.def')
@@ -48,7 +48,7 @@ def Up_is_Down(machinesAll, machinesDown, machinesUp, lamDefs):
         dead = os.system('ping -q -c1 ' + machine)
 	writeable = False
 	if not dead:
-	    writeable = not(os.system("ssh " + machine + " 'touch /tmp/trytouch' "))
+	    writeable = not(os.system("ssh " + machine + " 'touch /var/www/trytouch' "))
 	if dead or (not (writeable)):
             machinesDown.append(machine)
 	    machinesUp.remove(machine)
@@ -71,7 +71,7 @@ def Down_is_Up(machinesDown, machinesUp, lamDefs):
         dead = os.system('ping -q -c1 ' + machine)
 	writeable = False
 	if not dead:
-	    writeable = not(os.system("ssh " + machine + " 'touch /tmp/trytouch' "))
+	    writeable = not(os.system("ssh " + machine + " 'touch /var/www/trytouch' "))
         if (not dead) and writeable:
             machinesUp.append(machine)
 	    machinesDown.remove(machine)
@@ -84,8 +84,18 @@ def Down_is_Up(machinesDown, machinesUp, lamDefs):
             lamgrow(mach)
     return machinesDown, machinesUp
 
-
+os.system('/http/mpi.defs/generate.defs2.py')
 machinesDown, machinesUp = Up_is_Down(machinesAll, machinesDown, machinesUp, lamDefs)
 machinesDown, machinesUp = Down_is_Up(machinesDown, machinesUp, lamDefs)
 lamcheck(machinesUp[0])
 
+
+
+
+### change this; run over all machines.
+### turn off those that do not answer
+### keep track of those that answer
+### verify which to add to lam
+
+
+### but makes no sense to keep track of lists, since run anew.
