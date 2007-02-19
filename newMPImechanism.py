@@ -5,6 +5,7 @@
 import os
 import time
 import glob
+import socket
 
 BASE_IP = '192.168.7.'
 RANGE_IPS = range(1, 32)
@@ -12,6 +13,9 @@ RANGE_IPS = range(1, 32)
 lamDefs = glob.glob('lamb-host.*.def')
 
 machinesAll = [BASE_IP + str(i) for i in RANGE_IPS]
+
+
+log_mpi = open('/http/mpi.defs/newMPImech.log', mode = 'a')
 
 
 def lamboot(machine):
@@ -52,11 +56,13 @@ def maybe_add_nodes(all_nodes, current_nodes):
     else:
         for one_anode in all_nodes:
             if one_anode not in current_nodes:
+                log_mpi.write('consider adding nodes: machine ' + one_anode + ' \n')
                 if test_node_ok(one_anode) == 1:
                     lamgrow(one_anode)
+                    log_mpi.write('     adding nodes: machine ' + one_anode + ' ADDED\n')
                 
         
-def check_tping(tsleep = 5, nc = 5):
+def check_tping(tsleep = 15, nc = 5):
     """ Use tping to verify LAM universe OK.
     tsleep is how long we wait before checking output of tping."""
     
@@ -64,10 +70,13 @@ def check_tping(tsleep = 5, nc = 5):
     time.sleep(tsleep)
     tmp = int(os.popen('wc /http/mpi.defs/tping.out').readline().split()[0])
     if tmp == 0:
+        log_mpi.write('check tping = ' + str(tmp) + '\n')
         return 0
     elif tmp > 0:
+        log_mpi.write('check tping = 1 \n')
         return 1
     else:
+        log_mpi.write('check tping = ' + str(tmp) + '\n')
         return 0
 
 def machines_check_and_lamboot(machinesAll, lamDefs, tw = 5):
@@ -81,11 +90,13 @@ def machines_check_and_lamboot(machinesAll, lamDefs, tw = 5):
     machinesUp = []
     for machine in machinesAll:
         if test_node_ok(machine) == 1:
+            log_mpi.write('check_and_lamboot: machine ' + machine + ' UP\n')
             machinesUp.append(machine)
             for lamdef in lamDefs:
                 os.system("sed -i 's/#*" + machine + " /" +
                           machine + " /' " + lamdef)
         elif test_node_ok(machine) == 0:
+            log_mpi.write('check_and_lamboot: machine ' + machine + ' DOWN\n')
             for lamdef in lamDefs:
                 os.system("sed -i 's/" + machine + " /#" + 
                           machine + " /' " + lamdef)
@@ -97,25 +108,29 @@ def machines_check_and_lamboot(machinesAll, lamDefs, tw = 5):
     lamboot(machinesUp[0])
     
 
+def header_log():
+    log_mpi.write('\n\n')
+    log_mpi.write('##############################\n\n')
+    log_mpi.write(socket.gethostname())
+    log_mpi.write('\n')
+    log_mpi.write(time.strftime('%d %b %Y %H:%M:%S'))
+    log_mpi.write('\n\n')
 
-os.system('/http/mpi.defs/generate.defs2.py')
+
+
+header_log()
+
 lam_ok = check_tping()
 if lam_ok == 1:
     current_nodes_lam = lamnodes()
     maybe_add_nodes(machinesAll, current_nodes_lam)
 else:
+    os.system('/http/mpi.defs/generate.defs2.py')
+    log_mpi.write('Generated defs \n')
     machines_check_and_lamboot(machinesAll, lamDefs)
 
+log_mpi.flush()
+log_mpi.close()
 
 
-
-# no longer any sense
-# def lamcheck(machine):
-#     'Do a lamnodes, check we get the right count of nodes. O.w., lamboot'
-#     lf1 = int(os.popen('wc /http/mpi.defs/lamb-host.' + machine + '.def').readline().split()[0])
-#     lf2 = int(os.popen('grep "#" /http/mpi.defs/lamb-host.' + machine + '.def | wc').readline().split()[0])
-#     L_NODES = lf1 - lf2
-#     if (int(os.popen('lamnodes | wc').readline().split()[0]) < L_NODES):
-#         ## zz
-#         os.system('lamboot -H /http/mpi.defs/lamb-host.' + machine + '.def')
 
