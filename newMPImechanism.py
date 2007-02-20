@@ -64,7 +64,8 @@ def maybe_add_nodes(all_nodes, current_nodes):
         
 def check_tping(tsleep = 15, nc = 5):
     """ Use tping to verify LAM universe OK.
-    tsleep is how long we wait before checking output of tping."""
+    tsleep is how long we wait before checking output of tping.
+    Verify also using 'lamexec C hostname' """
     
     tmp2 = os.system('tping C N -c' + str(nc) + ' > /http/mpi.defs/tping.out & ')
     time.sleep(tsleep)
@@ -74,18 +75,28 @@ def check_tping(tsleep = 15, nc = 5):
         return 0
     elif tmp > 0:
         log_mpi.write('check tping = 1 \n')
-        return 1
+        lamexec = os.system('lamexec C hostname')
+        log_mpi.write('lamexec returned ' + str(lamexec) + '\n')
+        if lamexec == 0:
+            return 1
+        else:
+            return 0
     else:
         log_mpi.write('check tping = ' + str(tmp) + '\n')
         return 0
 
 def machines_check_and_lamboot(machinesAll, lamDefs, tw = 5):
     """ lamhalt, lamwipe, checks each machine, and fresh lamboot ."""
-
     os.system('lamhalt &')
     time.sleep(tw)
     os.system('lamwipe &')
     time.sleep(tw)
+    ## if we do not make sure all lamd are down, we can get into
+    ## trouble; same for Rslaves.sh
+    for machine in machinesAll:
+        os.system("ssh " + machine + " 'killall lamd' ")
+        os.system("ssh " + machine + " 'killall Rslaves.sh' ")
+        os.system("ssh " + machine + " 'killall tryRrun4.py' ")
        
     machinesUp = []
     for machine in machinesAll:
