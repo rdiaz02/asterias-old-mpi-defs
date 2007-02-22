@@ -1,0 +1,25 @@
+#!/usr/bin/python
+
+## To be placed in /etc/init.d (or whatever your system used)
+## and started at boot up
+
+import os
+import sys
+
+start_stop = sys.argv[1]
+
+if start_stop == 'start':
+    tmp = os.system('/http/mpi.defs/local_checkMPIdaemon.py ')
+    print 'OK'
+elif start_stop == 'stop':
+    tmp = os.popen('killall local_checkMPIdaemon.py')
+    print 'OK'
+elif start_stop == 'status':
+    tmp = os.popen('ps -C local_checkMPIdaemon.py --no-headers').readline()
+    if tmp:
+	print 'OK, is running'
+    else:
+	print 'stopped'
+
+
+
