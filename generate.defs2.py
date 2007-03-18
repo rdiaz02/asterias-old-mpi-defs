@@ -11,9 +11,9 @@ for i in range(1, 32):
     j = str(i)
     outf = open('lamb-host.' + BASE_NAME + j + '.def', mode = 'w')
     for m in range(i, 32):
-    	if m != 110:
+    	if m != 27 and m != 21:
             outf.write(BASE_IP + str(m) + ' cpu=' + N_CPUS + '\n') 
     for m in range(1, i):
-    	if m != 110:
+    	if m != 27 and m != 21:
             outf.write(BASE_IP + str(m) + ' cpu=' + N_CPUS + '\n') 
     outf.close()
