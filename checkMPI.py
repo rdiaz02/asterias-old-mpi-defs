@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 ## BEWARE: all of this has to run as www-data!!!!
+## I don't understand why?
 
 import os
 import time
@@ -10,7 +11,7 @@ import socket
 BASE_IP = '192.168.7.'
 RANGE_IPS = range(1, 32)
 
-lamDefs = glob.glob('lamb-host.*.def')
+lamDefs = glob.glob('/http/mpi.defs/lamb-host.*.def')
 
 machinesAll = [BASE_IP + str(i) for i in RANGE_IPS]
 
@@ -55,6 +56,8 @@ def header_log():
     log_mpi.write('##############################\n\n')
     log_mpi.write(socket.gethostname())
     log_mpi.write('\n')
+    log_mpi.write(os.environ['USER'])
+    log_mpi.write('\n')
     log_mpi.write(time.strftime('%d %b %Y %H:%M:%S'))
     log_mpi.write('\n\n')
 
@@ -65,5 +68,7 @@ machines_check(machinesAll, lamDefs)
 log_mpi.flush()
 log_mpi.close()
 
+## permissions
+os.system('chown -R www-data /http/mpi.defs/*')
 
 

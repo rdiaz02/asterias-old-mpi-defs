@@ -9,7 +9,14 @@ N_CPUS4  = '4'
 N_CPUS2  = '2'
 N_CPUS1  = '1'
 
-for i in range(1, 32):
+lll = range(1, 32)
+#lll.append(30)
+#lll.append(31)
+
+#lexclude = range(20, 30)
+lexclude = range(99, 100)
+
+for i in lll:
     if i < 10:
 	j = '0' + str(i)
     else:
@@ -20,13 +27,13 @@ for i in range(1, 32):
     outf4 = open('lamb-host.' + BASE_NAME + j + '.4cpu.def', mode = 'w')
 
     for m in range(i, 32):
-    	if m != 21:  #and m != 27 and m != 31:
+    	if m != 99  and m not in lexclude:
             outf.write(BASE_IP + str(m) + ' cpu=' + N_CPUS + '\n')
             outf2.write(BASE_IP + str(m) + ' cpu=' + N_CPUS2 + '\n') 
             outf1.write(BASE_IP + str(m) + ' cpu=' + N_CPUS1 + '\n') 
             outf4.write(BASE_IP + str(m) + ' cpu=' + N_CPUS4 + '\n') 
     for m in range(1, i):
-    	if m != 21: # and m != 27 and m != 31:
+    	if m != 99  and m not in lexclude:
             outf.write(BASE_IP + str(m) + ' cpu=' + N_CPUS + '\n')
             outf2.write(BASE_IP + str(m) + ' cpu=' + N_CPUS2 + '\n')             
             outf1.write(BASE_IP + str(m) + ' cpu=' + N_CPUS1 + '\n')             
