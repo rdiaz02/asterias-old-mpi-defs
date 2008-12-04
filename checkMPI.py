@@ -70,5 +70,7 @@ log_mpi.close()
 
 ## permissions
 os.system('chown -R www-data /http/mpi.defs/*')
-
+os.system('chgrp -R www-data /http/mpi.defs/*')
+os.system('chmod ug+rw -R /http/mpi.defs/*')
+# os.system('touch /http/mpi.defs/checkMPI.done.machine.' + 
 
