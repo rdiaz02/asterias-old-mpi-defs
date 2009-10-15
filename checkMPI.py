@@ -9,7 +9,9 @@ import glob
 import socket
 
 BASE_IP = '192.168.7.'
-RANGE_IPS = range(1, 32)
+RANGE_IPS = range(1, 31)
+
+# RANGE_IPS.remove(3)
 
 lamDefs = glob.glob('/http/mpi.defs/lamb-host.*.def')
 
@@ -25,9 +27,12 @@ def test_node_ok(machine):
     if dead:
         return 0
     else:
-        writeable = not(os.system("ssh " + machine +\
+        writeable_tmp = not(os.system("ssh -o ConnectTimeOut=10 " + machine +\
                                   " 'touch /var/www/trytouch' "))
-        return writeable
+	mounted_http = not(os.system("ssh -o ConnectTimeOut=10 " + machine +\
+                                  " 'cat /http/tmp/fichero.centinela' "))
+	writeable = writeable_tmp and mounted_http
+	return writeable
 
 
 def machines_check(machinesAll, lamDefs):
@@ -69,8 +74,8 @@ log_mpi.flush()
 log_mpi.close()
 
 ## permissions
-os.system('chown -R www-data /http/mpi.defs/*')
-os.system('chgrp -R www-data /http/mpi.defs/*')
-os.system('chmod ug+rw -R /http/mpi.defs/*')
-# os.system('touch /http/mpi.defs/checkMPI.done.machine.' + 
+#os.system('chown -R www /http/mpi.defs/*')
+#os.system('chgrp -R www /http/mpi.defs/*')
+#os.system('chmod ug+rw -R /http/mpi.defs/*')
+#os.system('touch /http/mpi.defs/checkMPI.done.machine.')
 
