@@ -8,10 +8,19 @@ import time
 import glob
 import socket
 
-BASE_IP = '192.168.7.'
+BASE_IP = '192.168.2.'
 RANGE_IPS = range(1, 31)
 
-# RANGE_IPS.remove(3)
+## removing this is daangerors: never checks it!!!
+RANGE_IPS.remove(2)
+RANGE_IPS.remove(5)
+RANGE_IPS.remove(1)
+RANGE_IPS.remove(4)
+RANGE_IPS.remove(15)
+RANGE_IPS.remove(18)
+RANGE_IPS.remove(25)
+RANGE_IPS.remove(26)
+RANGE_IPS.remove(28)
 
 lamDefs = glob.glob('/http/mpi.defs/lamb-host.*.def')
 

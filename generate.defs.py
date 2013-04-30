@@ -3,20 +3,41 @@
 
 
 BASE_NAME = 'karl'
-BASE_IP = '192.168.7.'
+BASE_IP = '192.168.2.'
 N_CPUS  = '4'
 N_CPUS4  = '4'
 N_CPUS2  = '2'
 N_CPUS1  = '1'
 
 lll = range(1, 32)
+## lll.remove(18)
+lll.remove(2)
+lll.remove(18)
+## lll.remove(23)
+lll.remove(1)
+lll.remove(4)
+lll.remove(15)
+lll.remove(25)
+lll.remove(26)
+lll.remove(5)
+lll.remove(28)
+
 ##lll = range(1, 3) + range(4, 31)
 #lll.append(30)
 #lll.append(31)
 
 #lexclude = range(13, 14) + range(25, 26) + range(29, 30) + range(99, 100)
 lexclude = range(99, 100)
-#lexclude.append(1)
+lexclude.append(18)
+lexclude.append(2)
+## lexclude.append(23)
+lexclude.append(1)
+lexclude.append(4)
+lexclude.append(15)
+lexclude.append(25)
+lexclude.append(26)
+lexclude.append(5)
+lexclude.append(28)
 
 for i in lll:
     if i < 10:
