@@ -20,7 +20,9 @@ lll.remove(15)
 lll.remove(25)
 lll.remove(26)
 lll.remove(5)
+lll.remove(6)
 lll.remove(28)
+lll.remove(22)
 
 ##lll = range(1, 3) + range(4, 31)
 #lll.append(30)
@@ -38,7 +40,8 @@ lexclude.append(25)
 lexclude.append(26)
 lexclude.append(5)
 lexclude.append(28)
-
+lexclude.append(22)
+lexclude.append(6)
 for i in lll:
     if i < 10:
 	j = '0' + str(i)
